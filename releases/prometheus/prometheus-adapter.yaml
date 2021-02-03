@@ -1,0 +1,29 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: prometheus-adapter
+  namespace: monitoring
+spec:
+  releaseName: prometheus-adapter
+  chart:
+    git: https://github.com/prometheus-community/helm-charts
+    ref: main
+    path: charts/prometheus-adapter
+  values:
+    prometheus:
+        url: http://prometheus-kube-prometheus-prometheus.monitoring
+        port: 9090
+    rules:
+        default: false
+        custom:
+        - seriesQuery: '{__name__=~"^gadgetron_reconstruction_start_total$"}'
+          resources:
+            overrides:
+              namespace:
+                resource: namespace
+              pod:
+                resource: pod
+          name:
+            matches: ^(.*)
+            as: "gadgetron_activity"
+          metricsQuery: ceil(sum(rate(<<.Series>>{<<.LabelMatchers>>}[10m])) by (<<.GroupBy>>))
