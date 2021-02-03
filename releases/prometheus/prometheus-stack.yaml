@@ -7,7 +7,7 @@ spec:
   releaseName: prometheus
   chart:
     git: https://github.com/prometheus-community/helm-charts
-    ref: master
+    ref: main
     path: charts/kube-prometheus-stack
   values:
     prometheus:
