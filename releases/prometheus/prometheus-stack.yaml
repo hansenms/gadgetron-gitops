@@ -1,0 +1,17 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  releaseName: prometheus
+  chart:
+    git: https://github.com/prometheus-community/helm-charts
+    ref: master
+    path: charts/kube-prometheus-stack
+  values:
+    prometheus:
+      prometheusSpec:
+        serviceMonitorSelector:
+          matchLabels:
+            prometheus: monitor
